@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('index')->comment('物品索引');
             $table->unsignedInteger('user_id')->comment('所属玩家');
             $table->unsignedMediumInteger('wear')->comment('耐久');
+            $table->unsignedMediumInteger('order')->default(0)->comment('排序');
             $table->unsignedMediumInteger('count')->default(1)->comment('数量，具备数量的商品不能获得自定义效果');
             $table->string('effects')->default('{}')->comment('效果');
             $table->unsignedMediumInteger('status')->default(0)->comment('位标记');

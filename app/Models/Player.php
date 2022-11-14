@@ -18,4 +18,6 @@ class Player extends Model
         'attack',
         'defence',
     ];
+
+    public const CACHE_PREFIX = 'player:';
 }

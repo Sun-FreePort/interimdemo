@@ -25,8 +25,8 @@ return new class extends Migration
 
             $table->unsignedInteger('slot_head')->default(0)->comment('头部装备');
             $table->unsignedInteger('slot_chest')->default(0)->comment('胸腹装备');
-            $table->unsignedInteger('slot_hand_left')->default(0)->comment('左手装备');
-            $table->unsignedInteger('slot_hand_right')->default(0)->comment('右手装备');
+            $table->unsignedInteger('slot_hand_left')->default(0)->comment('左手装备，双手武器放置于此');
+            $table->unsignedInteger('slot_hand_right')->default(0)->comment('右手装备，双手武器时为 -1');
             $table->unsignedInteger('slot_leg')->default(0)->comment('双腿装备');
             $table->unsignedInteger('slot_foot_left')->default(0)->comment('左脚装备');
             $table->unsignedInteger('slot_foot_right')->default(0)->comment('右脚装备');
