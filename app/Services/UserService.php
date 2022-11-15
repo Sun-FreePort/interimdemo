@@ -23,10 +23,9 @@ class UserService
         $data = [
             'player' => Player::query()->find(Auth::id()),
         ];
-        $adventure = Redis::get(Player::getAdventureKey(Auth::id())) ?? [];
+        $adventure = Redis::get(Player::getAdventureKey(Auth::id())) ?? '{}';
         $data['goods'] = Goods::query()
             ->where('user_id', Auth::id())
-            ->where('status', '&', 1)
             ->get();
 
         return [
@@ -35,7 +34,7 @@ class UserService
             'ts' => now()->timestamp,
             'player' => $data['player'],
             'goods' => $data['goods'],
-            'adventure' => $adventure,
+            'adventure' => json_decode($adventure, true),
         ];
     }
 
@@ -59,6 +58,7 @@ class UserService
             'attack_max' => 2,
             'defence_max' => 0,
             'nimble_max' => 3,
+            'refreshed_at' => time(),
         ]);
 
 //        Email::query()->create([

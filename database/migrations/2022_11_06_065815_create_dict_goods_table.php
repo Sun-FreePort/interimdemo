@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name')->comment('名字');
             $table->string('desc', 40)->comment('简述');
             $table->unsignedSmallInteger('type')->comment('类型');
-            $table->unsignedSmallInteger('wear')->comment('标准耐久');
+            $table->unsignedMediumInteger('wear')->comment('标准耐久');
             $table->string('effects')->default('{}')->comment('效果');
         });
     }

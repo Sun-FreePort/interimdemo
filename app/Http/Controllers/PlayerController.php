@@ -23,10 +23,10 @@ class PlayerController extends Controller
         $userID = Auth::id();
         $adventure = Redis::get(Player::getAdventureKey($userID));
         if ($adventure) {
-            return $adventure;
+            return json_decode($adventure, true);
         }
         $player = Player::query()->find($userID);
-        if ($player->hp > 10) {
+        if ($player->hp < 10) {
             abort(403, 'hpLacking');
         }
 
@@ -81,12 +81,13 @@ class PlayerController extends Controller
     public function fight(): array
     {
         // 检查玩家在冒险且战斗，获取玩家、怪物信息
-        $adventure = json_decode(Redis::get(Player::getAdventureKey(Auth::id())), true);
+        $adventure = Redis::get(Player::getAdventureKey(Auth::id()));
         if (!$adventure) {
             abort(403, 'adventureNotFound');
         } elseif ($adventure['target'] !== 'fight') {
             abort(403, 'mustInFight');
         }
+        $adventure = json_decode($adventure, true);
         $adventure['turn']++;
         $player = Player::query()->find(Auth::id())->toArray();
 
@@ -106,14 +107,25 @@ class PlayerController extends Controller
             } else {
                 $itemP = $this->fightOnce($player, $adventure['monster']);
             }
+            $check = $this->fightCheck($player, $adventure['monster']);
         }
 
         // TODO 装备耐久度降低
+        unset($player['created_at'], $player['updated_at']);
         DB::transaction(function () use ($player, $adventure, $check) {
             if (count($check['drops'])) {
-                Goods::query()->where('id', $player['id'])->add
+                foreach ($check['drops'] as $drop) {
+                    (new Goods())->add([
+                        'user_id' => Auth::id(),
+                        'index' => $drop['id'],
+                        'count' => $drop['count'],
+                    ]);
+                }
             }
             Player::query()->where('id', $player['id'])->update($player);
+            if ($check['failed'] !== 0) {
+                Redis::del(Player::getAdventureKey($player['id']));
+            }
             Redis::setex(Player::getAdventureKey($player['id']), 60 * 30, json_encode($adventure));
         });
 
@@ -123,10 +135,10 @@ class PlayerController extends Controller
             'adventure' => $adventure,
             'player' => $player,
             'playerFirst' => $playerFirst,
-            'turnEnemy' => $itemP['turn'] ?? 0, // 回合操作
+            'actionEnemy' => $itemP['action'] ?? 0, // 回合操作
             'damageEnemy' => $itemP['damage'] ?? 0, // 造成伤害
             'targetEnemy' => $itemP['target'] ?? 0, // 伤害方向
-            'turnSelf' => $itemM['turn'] ?? 0,
+            'actionSelf' => $itemM['action'] ?? 0,
             'damageSelf' => $itemM['damage'] ?? 0,
             'targetSelf' => $itemM['target'] ?? 0,
         ];
@@ -140,12 +152,17 @@ class PlayerController extends Controller
      */
     private function fightOnce(array &$attacker, array &$victim): array
     {
-        $turn = -1;
-        $damage = -1;
-        $target = -1;
+        $SELF = 1;
+        $ENEMY = 2;
+
+        $damage = $attacker['attack'];
+        $target = $ENEMY;
+        $action = 'fight';
+
+        $victim['hp'] -= $damage;
 
         return [
-            'turn' => $turn,
+            'action' => $action,
             'damage' => $damage,
             'target' => $target,
         ];
@@ -156,6 +173,7 @@ class PlayerController extends Controller
      * @param array $player
      * @param array $monster
      * @return array
+     * @throws \Exception
      */
     private function fightCheck(array $player, array $monster): array
     {
@@ -168,6 +186,15 @@ class PlayerController extends Controller
         }
         if ($monster['hp'] < 1) {
             $result['failed'] = 2;
+            foreach ($monster['drops'] as $drop) {
+                $rand = random_int($drop['min'], $drop['max']);
+                if ($rand > 0) {
+                    $result['drops'][] = [
+                        'id' => $drop['id'],
+                        'count' => $rand,
+                    ];
+                }
+            }
         }
 
         return $result;
@@ -188,11 +215,10 @@ class PlayerController extends Controller
         }
         $adventure['turn']++;
         $player = Player::query()->find(Auth::id());
-        Redis::del(Player::getAdventureKey($player->id), 60 * 30, json_encode($adventure));
-        // TODO 获取玩家、怪物信息，计算逃跑概率
-        $rate = 100;
-        // TODO 返回回合逃跑结果
+        Redis::del(Player::getAdventureKey($player->id));
 
+        // TODO 计算逃跑概率并返回
+        $rate = 100;
         return [
             'result' => 1,
         ];

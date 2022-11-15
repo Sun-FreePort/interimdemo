@@ -24,4 +24,8 @@ Route::post('/auth/signup', [\App\Http\Controllers\AuthController::class, 'signu
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/info', [\App\Http\Controllers\AuthController::class, 'userInfo']);
     Route::get('/system/dict', [\App\Http\Controllers\AuthController::class, 'systemDict']);
+
+    Route::put('/adventure', [\App\Http\Controllers\PlayerController::class, 'adventure']);
+    Route::post('/adventure/fight', [\App\Http\Controllers\PlayerController::class, 'fight']);
+    Route::post('/adventure/runaway', [\App\Http\Controllers\PlayerController::class, 'runaway']);
 });

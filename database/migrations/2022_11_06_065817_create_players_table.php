@@ -40,6 +40,7 @@ return new class extends Migration
             $table->unsignedInteger('slot_foot_right')->default(0)->comment('右脚装备');
             $table->unsignedInteger('slot_accessory')->default(0)->comment('配饰装备');
 
+            $table->unsignedInteger('refreshed_at')->comment('刷新时间');
             $table->timestamps();
         });
     }
