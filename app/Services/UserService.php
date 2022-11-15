@@ -8,12 +8,7 @@ use App\Models\Email;
 use App\Models\Goods;
 use App\Models\Order;
 use App\Models\Player;
-use App\Models\User;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
@@ -58,6 +53,12 @@ class UserService
             'attack' => 2,
             'defence' => 0,
             'nimble' => 3,
+            'hp_max' => 100,
+            'thew_max' => 100,
+            'enemy_max' => 100,
+            'attack_max' => 2,
+            'defence_max' => 0,
+            'nimble_max' => 3,
         ]);
 
 //        Email::query()->create([

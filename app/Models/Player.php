@@ -22,6 +22,13 @@ class Player extends Model
         'enemy',
         'attack',
         'defence',
+        'nimble',
+        'hp_max',
+        'thew_max',
+        'enemy_max',
+        'attack_max',
+        'defence_max',
+        'nimble_max',
     ];
 
     public static function getAdventureKey(string $id): string
