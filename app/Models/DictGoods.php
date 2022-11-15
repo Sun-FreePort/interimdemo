@@ -12,7 +12,6 @@ class DictGoods extends Model
 
     public const CREATED_AT = null;
     public const UPDATED_AT = null;
-
     /**
      * 缓存前缀
      */
@@ -63,14 +62,14 @@ class DictGoods extends Model
      */
     public const TYPE_FOOT_ACCESSORY = 11;
 
-    public static function get(int $index)
+    public static function get(int $index): array
     {
         $data = Redis::get(self::CACHE_PREFIX . $index);
         if (!$data) {
             $data = self::query()->findOrFail($index)->toArray();
             $data['effects'] = json_decode($data['effects'], true);
         } else {
-            json_decode($data, true);
+            $data = json_decode($data, true);
         }
 
         return $data;

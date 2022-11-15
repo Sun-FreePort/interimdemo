@@ -112,6 +112,18 @@ class AuthController extends Controller
     public function systemDict()
     {
         return [
+            'errors' => [
+                'hpLacking' => '健康过低',
+                'moneyLacking' => '缺钱',
+                'goodsLacking' => '货品不足',
+                'unequipped' => '尚未装备',
+                'equipped' => '已被装备',
+                'workBusy' => '已在工作中',
+                'goodsTypeFailed' => '道具类型有误',
+                'adventureNotHas' => '未知的冒险目标',
+                'adventureNotFound' => '冒险已经结束',
+                'mustInFight' => '需要战斗型冒险',
+            ],
             'goods' => DictGoods::query()->get(),
             'monster' => DictMonster::query()->get(),
             'local' => DictLocal::query()->get(),

@@ -16,9 +16,12 @@ return new class extends Migration
         Schema::create('dict_monsters', function (Blueprint $table) {
             $table->id();
             $table->string('name')->comment('称呼');
-            $table->unsignedInteger('hp')->comment('生命');
-            $table->unsignedInteger('attack')->comment('伤害');
-            $table->unsignedInteger('defence')->comment('防御');
+            $table->unsignedInteger('hp_max')->comment('最大生命');
+            $table->unsignedInteger('thew_max')->comment('最大体力');
+            $table->unsignedInteger('enemy_max')->comment('最大精力');
+            $table->unsignedInteger('attack_max')->comment('最大伤害');
+            $table->unsignedInteger('defence_max')->comment('最大防御');
+            $table->unsignedInteger('nimble_max')->comment('最大敏捷');
             $table->string('drops')->comment('掉落物，JSON');
         });
     }

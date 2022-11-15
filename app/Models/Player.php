@@ -9,6 +9,11 @@ class Player extends Model
 {
     use HasFactory;
 
+    /**
+     * 缓存 Key
+     */
+    public const CACHE_PREFIX = 'player:';
+
     protected $fillable = [
         'id',
         'name',
@@ -19,5 +24,8 @@ class Player extends Model
         'defence',
     ];
 
-    public const CACHE_PREFIX = 'player:';
+    public static function getAdventureKey(string $id): string
+    {
+        return self::CACHE_PREFIX . $id . ':adventure';
+    }
 }
