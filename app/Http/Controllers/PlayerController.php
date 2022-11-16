@@ -84,10 +84,11 @@ class PlayerController extends Controller
         $adventure = Redis::get(Player::getAdventureKey(Auth::id()));
         if (!$adventure) {
             abort(403, 'adventureNotFound');
-        } elseif ($adventure['target'] !== 'fight') {
-            abort(403, 'mustInFight');
         }
         $adventure = json_decode($adventure, true);
+        if ($adventure['target'] !== 'fight') {
+            abort(403, 'mustInFight');
+        }
         $adventure['turn']++;
         $player = Player::query()->find(Auth::id())->toArray();
 

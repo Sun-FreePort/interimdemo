@@ -113,6 +113,8 @@ class AuthController extends Controller
     {
         return [
             'errors' => [
+                'userNotHas' => '账号不存在',
+                'authReject' => '账号或密码有误',
                 'hpLacking' => '健康过低',
                 'moneyLacking' => '缺钱',
                 'goodsLacking' => '货品不足',
